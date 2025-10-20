@@ -1,4 +1,6 @@
-    const animationOptions = [
+   // added options to dropdown
+   
+   const animationOptions = [
         {value : 'idle', text: 'Idle'},
         {value : 'jump', text: 'Jump'},
         {value : 'fall', text: 'Fall'},
@@ -34,7 +36,7 @@
     controlDev.appendChild(select);
    
    
-   
+   // main code for character animation
    let playerState = 'idle';
     const dropdown = document.getElementById('animations');
     dropdown.addEventListener('change', function(e){
@@ -44,9 +46,7 @@
     const canvas = document.getElementById('canvas1');
     const ctx = canvas.getContext('2d');
 
-        // --- FIX: Set width and height on the canvas element ---
-        // These dimensions are large enough to contain your drawing
-        // by default canvas is 300x150
+    // by default canvas is 300x150
     const CANVAS_WIDTH = canvas.width = 600;
     const CANVAS_HEIGHT = canvas.height = 600;
 
@@ -60,7 +60,6 @@
 
     // to control animation speed
     let gameFrame = 0;
-    const staggerFrames = 5; // Animation will now update every 10 frames instead of 5; higher the number slower the animation
     const spriteAnimations = [];
     const animationStates = [
         {
