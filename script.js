@@ -15,9 +15,9 @@ window.addEventListener('load', function(){
             this.input = new InputHandler();
         }
 
-        update(){
+        update(deltaTime){
             // Update game state
-            this.player.update(this.input.keys);
+            this.player.update(this.input.keys, deltaTime);
         }
 
         draw(context){
@@ -28,12 +28,16 @@ window.addEventListener('load', function(){
 
     const game = new Game(canvas.width, canvas.height);
     console.log(game);
-
-    (function animate(){
+    let lastTime = 0;
+    function animate(timeStamp){
+        const deltaTime = timeStamp - lastTime;
+        // console.log(deltaTime);
+        lastTime = timeStamp;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        game.update();
+        game.update(deltaTime);
         game.draw(ctx);
-        requestAnimationFrame(animate);   
-    })();
+        requestAnimationFrame(animate);   // 2 special features auto adjust fps auto adj time stamps
+    }
+    animate(0);
 
 });

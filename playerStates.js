@@ -18,6 +18,8 @@ export class Sitting extends State{
     }
 
     enter() {
+        this.player.frameX = 0; // to remove occasional blinking
+        this.player.maxFrame = 4;
         this.player.frameY = 5;
     }
 
@@ -35,6 +37,7 @@ export class Running extends State{
 
     enter() {
         this.player.frameY = 3;
+        this.player.maxFrame = 6;
     }
 
     handleInput(input){
@@ -42,7 +45,7 @@ export class Running extends State{
             this.player.setState(states.SITTING);
         }
 
-        else if (input.includes('ArrowUp')) {
+        else if (input.includes('ArrowUp') || input.includes(' ')) {
             this.player.setState(states.JUMPING);
         }
     }
@@ -57,7 +60,9 @@ export class Jumping extends State{
         if(this.player.onGround()){
             this.player.vy -= 30;
         }
+        this.maxFrame = 6;
         this.player.frameY = 1;
+
     }
 
     handleInput(input){
@@ -77,6 +82,7 @@ export class Falling extends State{
         if(this.player.onGround()){
             this.player.vy -= 30;
         }
+        this.maxFrame = 6;
         this.player.frameY = 2;
     }
 
