@@ -8,7 +8,7 @@ export class Player {
         this.width = 100;
         this.height = 91.3;
         this.x = 0;
-        this.y = this.game.height - this.height ;
+        this.y = this.game.height - this.height  - this.game.groundMargin;
         this.vy = 0;
         this.weight = 1;
         this.image = document.getElementById('player');
@@ -62,12 +62,13 @@ export class Player {
 
     //helper function to check if on ground or not
     onGround() {
-        return this.y >= this.game.height - this.height; // return true if on ground
+        return this.y >= this.game.height - this.height - this.game.groundMargin; // return true if on ground
     }
 
     // helper function to set the current state
-    setState(state) {
+    setState(state,speed) {
         this.currentState = this.states[state];
+        this.game.speed = this.game.maxSpeed * speed;
         this.currentState.enter();
     }
 }
