@@ -25,18 +25,23 @@ window.addEventListener('load', function(){
             this.UI = new UI(this);
             this.particles = [];
             this.enemies = []; // to manage enemies states
+            this.collisions = [];
             this.enemyTimer = 0;
             this.enemyInterval = 1000;
             this.maxParticles = 50;
-            this.debug = true;
+            this.debug = false;
             this.score = 0;
             this.fontColor = 'black';
-
+            this.time = 0;
+            this.maxTime = 10000;
+            this.gameOver = false;
             this.player.currentState = this.player.states[0];
             this.player.currentState.enter();
         }
 
         update(deltaTime){
+            this.time += deltaTime;
+            if(this.time > this.maxTime) this.gameOver = true;
             // Update game state
             this.background.update();
             this.player.update(this.input.keys, deltaTime);
@@ -61,6 +66,12 @@ window.addEventListener('load', function(){
                 this.particles = this.particles.splice(0, this.maxParticles);
             }
 
+            //handles coll sprites
+            this.collisions.forEach((collision, index) => {
+                collision.update(deltaTime);
+                if(collision.markedForDeletion) this.collisions.splice(index, 1);
+            })
+
         }
 
         draw(context){
@@ -72,6 +83,10 @@ window.addEventListener('load', function(){
 
             this.particles.forEach(particle => {
                 particle.draw(context);
+            })
+
+            this.collisions.forEach(collision => {
+                collision.draw(context);
             })
 
             this.UI.draw(context);
@@ -96,7 +111,7 @@ window.addEventListener('load', function(){
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         game.update(deltaTime);
         game.draw(ctx);
-        requestAnimationFrame(animate);   // 2 special features auto adjust fps auto adj time stamps
+        if(!game.gameOver)requestAnimationFrame(animate);   // 2 special features auto adjust fps auto adj time stamps
     }
     animate(0);
 

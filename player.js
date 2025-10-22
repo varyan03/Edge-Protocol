@@ -1,6 +1,6 @@
-import {Sitting, Jumping, Falling, Rolling, Diving} from './playerStates.js';
+import {Sitting, Jumping, Falling, Rolling, Diving, Hit} from './playerStates.js';
 import {Running} from './playerStates.js';
-
+import { CollisionAnimation } from './collisionAnimation.js';
 
 export class Player {
     constructor(game) {
@@ -20,7 +20,7 @@ export class Player {
         this.frameTimer = 0;
         this.speed = 0;
         this.maxSpeed = 5;
-        this.states = [new Sitting(this, this.game), new Running(this,this.game), new Jumping(this, this.game), new Falling(this, this.game), new Rolling(this, this.game), new Diving(this, this.game)];
+        this.states = [new Sitting(this, this.game), new Running(this,this.game), new Jumping(this, this.game), new Falling(this, this.game), new Rolling(this, this.game), new Diving(this, this.game), new Hit(this, this.game)];
         // this.currentState = this.states[0];
         // this.currentState.enter();
         }
@@ -30,8 +30,8 @@ export class Player {
         this.currentState.handleInput(input);
         // horizontal movement
         this.x += this.speed; // becoz 
-        if(input.includes('ArrowRight')) this.speed = this.maxSpeed;
-        else if(input.includes('ArrowLeft')) this.speed = -this.maxSpeed;
+        if(input.includes('ArrowRight') && this.currentState != this.states[6])  this.speed = this.maxSpeed;
+        else if(input.includes('ArrowLeft') && this.currentState != this.states[6]) this.speed = -this.maxSpeed;
         else this.speed = 0;
         
         // horiz boundaries
@@ -79,14 +79,18 @@ export class Player {
     checkCollision() {
         this.game.enemies.forEach( enemy => {
             if((this.x < enemy.x + enemy.width) && 
-            (this.x + this.width > enemy.x) &&
-            this.y < enemy.y + enemy.height &&
-            this.y + this.height > enemy.y
+                (this.x + this.width > enemy.x) &&
+                this.y < enemy.y + enemy.height &&
+                this.y + this.height > enemy.y
             ){
                 // this.game.score++;
                 enemy.markedForDeletion = true;
-                this.game.score++;
-                // console.log(this.game.score + "score");
+                this.game.collisions.push(new CollisionAnimation(this.game, enemy.x + enemy.width * 0.5, enemy.y + enemy.height * 0.5));
+                if(this.currentState === this.states[4] || this.currentState === this.states[5]) {
+                    this.game.score++;
+                } else{
+                    this.setState(6,0);
+                }
             }
 
             // else console.log(" No collision")
