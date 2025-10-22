@@ -1,4 +1,4 @@
-import {Sitting, Jumping, Falling} from './playerStates.js';
+import {Sitting, Jumping, Falling, Rolling} from './playerStates.js';
 import {Running} from './playerStates.js';
 
 
@@ -20,12 +20,13 @@ export class Player {
         this.frameTimer = 0;
         this.speed = 0;
         this.maxSpeed = 5;
-        this.states = [new Sitting(this), new Running(this), new Jumping(this), new Falling(this)];
-        this.currentState = this.states[0];
-        this.currentState.enter();
+        this.states = [new Sitting(this, this.game), new Running(this,this.game), new Jumping(this, this.game), new Falling(this, this.game), new Rolling(this, this.game)];
+        // this.currentState = this.states[0];
+        // this.currentState.enter();
         }
 
     update(input, deltaTime) { 
+        this.checkCollision(); // to detect collision
         this.currentState.handleInput(input);
         // horizontal movement
         this.x += this.speed; // becoz 
@@ -57,6 +58,7 @@ export class Player {
 
 
     draw(context) {
+        if(this.game.debug) context.strokeRect(this.x, this.y, this.width, this.height);
         context.drawImage(this.image, this.frameX * this.width, this.frameY * this.height,this.width, this.height, this.x, this.y, this.width, this.height);
     }
 
@@ -70,5 +72,22 @@ export class Player {
         this.currentState = this.states[state];
         this.game.speed = this.game.maxSpeed * speed;
         this.currentState.enter();
+    }
+
+    checkCollision() {
+        this.game.enemies.forEach( enemy => {
+            if((this.x < enemy.x + enemy.width) && 
+            (this.x + this.width > enemy.x) &&
+            this.y < enemy.y + enemy.height &&
+            this.y + this.height > enemy.y
+            ){
+                // this.game.score++;
+                enemy.markedForDeletion = true;
+                this.game.score++;
+                // console.log(this.game.score + "score");
+            }
+
+            // else console.log(" No collision")
+        });
     }
 }

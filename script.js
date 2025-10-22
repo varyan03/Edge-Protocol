@@ -2,26 +2,38 @@ import {Player} from './player.js';
 import {InputHandler} from './input.js';
 import { Background } from './background.js';
 import { FlyingEnemy, ClimbingEnemy, GroundEnemy} from './enemy.js';
-
+import {UI} from './Ui.js';
 window.addEventListener('load', function(){
     const canvas = document.getElementById('canvas1');
     const ctx = canvas.getContext('2d');
-    canvas.width = 500;
+    canvas.width = 800;
     canvas.height = 500;
 
+    // Game contructor to initialize all the objects
+    // this will serve as an entry point for all the methods and objs
     class Game {
         constructor(width, height){
             this.width = width;
             this.height = height;
-            this.groundMargin = 80;
+            this.groundMargin = 80; // to make sure player is at the right position
             this.speed = 0;
             this.maxSpeed = 5;
             this.background = new Background(this);
+            // for player state
             this.player = new Player(this);
-            this.input = new InputHandler();
-            this.enemies = [];
+            this.input = new InputHandler(this);
+            this.UI = new UI(this);
+            this.particles = [];
+            this.enemies = []; // to manage enemies states
             this.enemyTimer = 0;
             this.enemyInterval = 1000;
+
+            this.debug = true;
+            this.score = 0;
+            this.fontColor = 'black';
+
+            this.player.currentState = this.player.states[0];
+            this.player.currentState.enter();
         }
 
         update(deltaTime){
@@ -32,16 +44,19 @@ window.addEventListener('load', function(){
             if(this.enemyTimer > this.enemyInterval) {
                 this.addEnemy();
                 this.enemyTimer = 0;
-            }
-            else {
+            }else {
                 this.enemyTimer += deltaTime;
             }
-
             this.enemies.forEach(enemy => {
                 enemy.update(deltaTime);
                 if(enemy.markedForDeletion) this.enemies.splice(this.enemies.indexOf(enemy), 1);
             })
 
+            // hamdles dust
+            this.particles.forEach((particle, index) =>  {
+                particle.update();
+                if(particle.markedForDeletion) this.particles.splice(index, 1);
+            });
 
         }
 
@@ -51,19 +66,25 @@ window.addEventListener('load', function(){
             this.enemies.forEach(enemy => {
                 enemy.draw(context);
             })
+
+            this.particles.forEach(particle => {
+                particle.draw(context);
+            })
+
+            this.UI.draw(context);
         }
 
         addEnemy() {
             if(this.speed > 0 && Math.random() < 0.5) this.enemies.push(new GroundEnemy(this));
             else if(this.speed > 0) this.enemies.push(new ClimbingEnemy(this));
             this.enemies.push(new FlyingEnemy(this));
-            console.log(this.enemies);
+            // console.log(this.enemies);
         }
 
     }
 
     const game = new Game(canvas.width, canvas.height);
-    console.log(game);
+    // console.log(game);
     let lastTime = 0;
     function animate(timeStamp){
         const deltaTime = timeStamp - lastTime;
