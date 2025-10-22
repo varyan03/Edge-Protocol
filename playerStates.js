@@ -1,4 +1,4 @@
-import { Dust } from './particles.js';
+import { Dust,Fire } from './particles.js';
 const states = {
     SITTING : 0,
     RUNNING : 1,
@@ -49,7 +49,7 @@ export class Running extends State{
     }
 
     handleInput(input){
-        this.game.particles.push(new Dust(
+        this.game.particles.unshift(new Dust(
             this.game, 
             this.game.player.x + this.game.player.width * 0.5, // Center of player
             this.game.player.y + this.game.player.height      // Bottom of player
@@ -125,6 +125,11 @@ export class Rolling extends State{
     }
 
     handleInput(input){
+        this.game.particles.unshift(new Fire(
+            this.game, 
+            this.game.player.x + this.game.player.width * 0.5, // Center of player
+            this.game.player.y + this.game.player.height  * 0.5     // Bottom of player
+        )); // adds to the beginning 
         if(!input.includes('Enter') && this.game.player.onGround()){
             this.game.player.setState(states.RUNNING, 1);
         }else if (!input.includes('Enter') && !this.game.player.onGround()){

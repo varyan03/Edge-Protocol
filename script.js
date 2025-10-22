@@ -27,7 +27,7 @@ window.addEventListener('load', function(){
             this.enemies = []; // to manage enemies states
             this.enemyTimer = 0;
             this.enemyInterval = 1000;
-
+            this.maxParticles = 50;
             this.debug = true;
             this.score = 0;
             this.fontColor = 'black';
@@ -57,6 +57,9 @@ window.addEventListener('load', function(){
                 particle.update();
                 if(particle.markedForDeletion) this.particles.splice(index, 1);
             });
+            if(this.particles.length > this.maxParticles) {
+                this.particles = this.particles.splice(0, this.maxParticles);
+            }
 
         }
 
