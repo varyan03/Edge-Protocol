@@ -3,6 +3,8 @@ import {InputHandler} from './input.js';
 import { Background } from './background.js';
 import { FlyingEnemy, ClimbingEnemy, GroundEnemy} from './enemy.js';
 import {UI} from './Ui.js';
+import { ScoreManager } from './score.js';
+
 window.addEventListener('load', function(){
     const canvas = document.getElementById('canvas1');
     const ctx = canvas.getContext('2d');
@@ -35,13 +37,18 @@ window.addEventListener('load', function(){
             this.time = 0;
             this.maxTime = 10000;
             this.gameOver = false;
+            this.scoreManager = new ScoreManager();
             this.player.currentState = this.player.states[0];
             this.player.currentState.enter();
         }
 
         update(deltaTime){
             this.time += deltaTime;
-            if(this.time > this.maxTime) this.gameOver = true;
+            if(this.time > this.maxTime) {
+                this.gameOver = true;
+                this.scoreManager.updateHighScore(this.score);
+            }
+
             // Update game state
             this.background.update();
             this.player.update(this.input.keys, deltaTime);

@@ -21,6 +21,11 @@ export class UI {
         //timer 
         context.font = this.fontSize * 0.8 + 'px ' + this.fontFamily;
         context.fillText('Time: ' + (this.game.time * 0.001).toFixed(1), 20, 80);
+
+        // high score
+        context.font = this.fontSize * 0.8 + 'px ' + this.fontFamily;
+        context.fillText('High Score: ' + this.game.scoreManager.getHighScore(), 20, 110);
+        
         // game over msg
         if(this.game.gameOver) {
             context.textAlign = 'left';
