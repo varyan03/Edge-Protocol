@@ -1,4 +1,4 @@
-import {Sitting, Jumping, Falling, Rolling} from './playerStates.js';
+import {Sitting, Jumping, Falling, Rolling, Diving} from './playerStates.js';
 import {Running} from './playerStates.js';
 
 
@@ -20,7 +20,7 @@ export class Player {
         this.frameTimer = 0;
         this.speed = 0;
         this.maxSpeed = 5;
-        this.states = [new Sitting(this, this.game), new Running(this,this.game), new Jumping(this, this.game), new Falling(this, this.game), new Rolling(this, this.game)];
+        this.states = [new Sitting(this, this.game), new Running(this,this.game), new Jumping(this, this.game), new Falling(this, this.game), new Rolling(this, this.game), new Diving(this, this.game)];
         // this.currentState = this.states[0];
         // this.currentState.enter();
         }
@@ -33,8 +33,8 @@ export class Player {
         if(input.includes('ArrowRight')) this.speed = this.maxSpeed;
         else if(input.includes('ArrowLeft')) this.speed = -this.maxSpeed;
         else this.speed = 0;
-
-        // boundaries
+        
+        // horiz boundaries
         if(this.x < 0) this.x = 0;
         if(this.x > this.game.width - this.width) this.x = this.game.width - this.width;
 
@@ -43,6 +43,8 @@ export class Player {
         this.y += this.vy;
         if(!this.onGround())  this.vy += this.weight;
         else this.vy = 0;
+        // vert boundaries
+        if(this.y > this.game.height - this.height - this.game.groundMargin) this.y = this.game.height - this.height - this.game.groundMargin;
 
         // sprite animation
         // if(this.frameX < this.maxFrame ) this.frameX++;
