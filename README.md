@@ -2,7 +2,8 @@
 
 A 2D endless runner game built with vanilla JavaScript, HTML Canvas, and ES6 Modules. Dodge enemies, collect points, and try to beat your high score!
 
-![Gameplay Screenshot](https://via.placeholder.com/800x400.png?text=Add+Gameplay+Screenshot+Here)
+![Gameplay Screenshot](<img width="1007" height="643" alt="image" src="https://github.com/user-attachments/assets/fb84ead5-33f0-45b1-953a-a26859ba22bf" />
+)
 
 ## ✨ Features
 
