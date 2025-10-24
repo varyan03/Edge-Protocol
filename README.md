@@ -3,7 +3,7 @@
 A 2D endless runner game built with vanilla JavaScript, HTML Canvas, and ES6 Modules. Dodge enemies, collect points, and try to beat your high score!
 
 ![Gameplay Screenshot](./resources/gameplay.png)
-
+## Live Demo [Link](http://98.93.149.41/)
 ## ✨ Features
 
 * **Advanced Player State Machine:** Player character uses a finite state machine (`Sitting`, `Running`, `Jumping`, `Falling`, `Rolling`, `Diving`, `Hit`) to manage animations and logic.
