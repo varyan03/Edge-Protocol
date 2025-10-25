@@ -17,3 +17,64 @@
 #colAni,#fire,#player, #layer1, #layer2, #layer3, #layer4, #layer5, #enemy_fly, #enemy_plant, #enemy_spider_big{
     display: none;
 }
+
+/* Add this to your style.css */
+
+#usernamePromptOverlay {
+    position: fixed; /* Sit on top of everything */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7); /* Dark background */
+    z-index: 100;
+    
+    /* Center the box */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    /* This will be hidden by our JS logic at the start */
+    display: none; 
+}
+
+#usernamePromptBox {
+    background: white;
+    padding: 25px 40px;
+    border-radius: 10px;
+    text-align: center;
+    font-family: 'Helvetica', sans-serif;
+}
+
+#usernamePromptBox input {
+    font-size: 1.2rem;
+    padding: 5px;
+    margin-right: 10px;
+}
+
+#usernamePromptBox button {
+    font-size: 1.2rem;
+    padding: 5px 10px;
+}
+
+
+#restartButton {
+    display: none; /* Hide it by default */
+    position: absolute; /* Position it relative to the page */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* This perfectly centers it */
+    padding: 15px 30px;
+    font-size: 1.5rem;
+    font-family: 'Helvetica', sans-serif;
+    color: white;
+    background: #333;
+    border: 2px solid white;
+    border-radius: 5px;
+    cursor: pointer;
+    z-index: 50; /* Make sure it's on top of the canvas */
+}
+
+#restartButton:hover {
+    background: #555;
+}

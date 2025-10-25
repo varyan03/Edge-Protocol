@@ -3,6 +3,7 @@ export class UI {
         this.game = game;
         this.fontSize = 30;
         this.fontFamily = 'Helvetica';
+        this.highScore = this.game.scoreManager.getHighScore();
     }
 
     draw(context){
@@ -22,9 +23,15 @@ export class UI {
         context.font = this.fontSize * 0.8 + 'px ' + this.fontFamily;
         context.fillText('Time: ' + (this.game.time * 0.001).toFixed(1), 20, 80);
 
-        // high score
+       // --- High Score ---
         context.font = this.fontSize * 0.8 + 'px ' + this.fontFamily;
-        context.fillText('High Score: ' + this.game.scoreManager.getHighScore(), 20, 110);
+        // Check if current score is the new high score
+        const displayScore = this.game.score > this.highScore ? this.game.score : this.highScore;
+        context.fillText('High Score: ' + displayScore, 20, 110); // <-- Adjusted Y position
+
+        // --- Player Name (NEW) ---
+        context.font = this.fontSize * 0.8 + 'px ' + this.fontFamily;
+        context.fillText('Player: ' + this.game.username, 20, 140);
         
         // game over msg
         if(this.game.gameOver) {

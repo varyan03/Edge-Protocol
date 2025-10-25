@@ -8,15 +8,25 @@ import { ScoreManager } from './score.js';
 window.addEventListener('load', function(){
     const canvas = document.getElementById('canvas1');
     const ctx = canvas.getContext('2d');
+    const usernamePrompt = document.getElementById('usernamePromptOverlay');
+    const usernameInput = document.getElementById('usernameInput');
+    const saveButton = document.getElementById('saveUsernameButton');
+    const restartButton = document.getElementById('restartButton');
+
     canvas.width = 800;
     canvas.height = 500;
 
+
+    const USERNAME_KEY = 'endlessRunnerUsername';
+    let game = null;
     // Game contructor to initialize all the objects
     // this will serve as an entry point for all the methods and objs
     class Game {
-        constructor(width, height){
+        constructor(width, height,username){
             this.width = width;
             this.height = height;
+            this.username = username;
+
             this.groundMargin = 80; // to make sure player is at the right position
             this.speed = 0;
             this.maxSpeed = 5;
@@ -24,6 +34,7 @@ window.addEventListener('load', function(){
             // for player state
             this.player = new Player(this);
             this.input = new InputHandler(this);
+            this.scoreManager = new ScoreManager();
             this.UI = new UI(this);
             this.particles = [];
             this.enemies = []; // to manage enemies states
@@ -35,9 +46,9 @@ window.addEventListener('load', function(){
             this.score = 0;
             this.fontColor = 'black';
             this.time = 0;
-            this.maxTime = 10000;
+            this.maxTime = 30000;
             this.gameOver = false;
-            this.scoreManager = new ScoreManager();
+            
             this.player.currentState = this.player.states[0];
             this.player.currentState.enter();
         }
@@ -108,18 +119,69 @@ window.addEventListener('load', function(){
 
     }
 
-    const game = new Game(canvas.width, canvas.height);
-    // console.log(game);
     let lastTime = 0;
-    function animate(timeStamp){
-        const deltaTime = timeStamp - lastTime;
-        // console.log(deltaTime);
-        lastTime = timeStamp;
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        game.update(deltaTime);
-        game.draw(ctx);
-        if(!game.gameOver)requestAnimationFrame(animate);   // 2 special features auto adjust fps auto adj time stamps
+     function animate(timeStamp){
+     let deltaTime = timeStamp - lastTime; // Change to 'let'
+     lastTime = timeStamp;
+
+        // --- THIS IS THE FIX ---
+        // If deltaTime is huge (first frame, or tabbed away),
+        // cap it to a normal frame's length (e.g., ~60fps)
+        if (deltaTime > 100) {
+            deltaTime = 16.67; 
+        }
+        // --- END FIX ---
+
+     ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+         if (game) {
+            game.update(deltaTime); // Will now use the capped value
+            game.draw(ctx);
+            if (game.gameOver) {
+                restartButton.style.display = 'block'; // Show the button
+            }
+            if(!game.gameOver) requestAnimationFrame(animate);
+        }
+     }
+    // animate(0);
+
+
+    // --- Main Startup Function ---
+    function startGame(username) {
+        // This function now starts the game
+        usernamePrompt.style.display = 'none'; // Hide the prompt
+        restartButton.style.display = 'none';
+        game = new Game(canvas.width, canvas.height, username); // Create game with username
+        lastTime = 0;
+        animate(0);
     }
-    animate(0);
+
+    // --- !!! THIS IS THE NEW LOGIC !!! ---
+
+    // 1. Check local storage for the username
+    const storedUsername = localStorage.getItem(USERNAME_KEY);
+
+    if (storedUsername) {
+        // 2. If user exists, start the game immediately
+        startGame(storedUsername);
+    } else {
+        // 3. If no user, show the prompt
+        usernamePrompt.style.display = 'flex';
+    }
+
+    // 4. Add listener for the "Start Game" button
+    saveButton.addEventListener('click', () => {
+        const username = usernameInput.value.trim();
+        if (username) {
+            localStorage.setItem(USERNAME_KEY, username);
+            startGame(username); // Start the game with the new username
+        } else {
+            alert('Please enter a name!');
+        }
+    });
+
+    restartButton.addEventListener('click', () => {
+        startGame(this.username); // Restart the game with the same user
+    });
 
 });
